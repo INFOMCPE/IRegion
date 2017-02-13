@@ -1,0 +1,14 @@
+name: IRegion
+main: infomcpe\Region
+author: Алексей
+version: 0.2
+api: [2.0.0]
+load: STARTUP
+website: infomcpe.ru
+commands:
+  br:
+    default: true
+    description: Покупка регионов
+    aliases: [buyregion]
+
+ 
