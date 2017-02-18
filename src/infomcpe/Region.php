@@ -20,13 +20,13 @@ use pocketmine\event\block\SignChangeEvent;
 class Region extends PluginBase implements Listener {
 	   const Prfix = '§f[§aIRegion§f]§e ';
     public function onLoad(){
-	} 
+	}
         private function getMoney($player) {
             if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
-                $money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")->myMoney($player); 
+                $money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")->myMoney($player);
                }
                if($this->getServer()->getPluginManager()->getPlugin("EconomyPlus") != null){
-               	
+
                $money = EconomyPlus::getInstance()->getMoney($player);
                }
                return $money;
@@ -49,35 +49,35 @@ class Region extends PluginBase implements Listener {
                }
                return $result;
         }
-	private function dataSave($playerName, $tip, $data){ 
-           $Sfile = (new Config($this->getDataFolder() . "data/".strtolower($playerName).".json", Config::JSON))->getAll(); 
+	private function dataSave($playerName, $tip, $data){
+           $Sfile = (new Config($this->getDataFolder() . "data/".strtolower($playerName).".json", Config::JSON))->getAll();
            $Sfile[$tip] = $data;
-           $Ffile = new Config($this->getDataFolder() . "data/".strtolower($playerName).".json", Config::JSON); 
-           $Ffile->setAll($Sfile); 
-           $Ffile->save(); 
-} 
-	public function dataGet($playerName, $tip){ 
-        $Sfile = (new Config($this->getDataFolder() . "data/".strtolower($playerName).".json", Config::JSON))->getAll(); 
-        return $Sfile[$tip]; 
-} 
+           $Ffile = new Config($this->getDataFolder() . "data/".strtolower($playerName).".json", Config::JSON);
+           $Ffile->setAll($Sfile);
+           $Ffile->save();
+}
+	public function dataGet($playerName, $tip){
+        $Sfile = (new Config($this->getDataFolder() . "data/".strtolower($playerName).".json", Config::JSON))->getAll();
+        return $Sfile[$tip];
+}
 	public function onEnable(){
 			if(!is_dir($this->getDataFolder())){
 				@mkdir($this->getDataFolder());
                                 @mkdir($this->getDataFolder().'data');
                         }
-			$this->saveDefaultConfig();
+
 			$this->getServer()->getPluginManager()->registerEvents($this, $this);
 			//$this->getServer()->getScheduler()->scheduleAsyncTask(new CheckVersionTask($this));
-			
+
                         if ($this->getServer()->getPluginManager()->getPlugin("PluginDownloader")) {
-                            $this->getServer()->getScheduler()->scheduleAsyncTask(new CheckVersionTask($this, 317)); 
+                            $this->getServer()->getScheduler()->scheduleAsyncTask(new CheckVersionTask($this, 317));
                         }
                         if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
                $this->eco = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
           }
-		
+
     }
-        
+
 	public function onDisable(){
 	}
         public function sessionAPI() {
@@ -96,30 +96,30 @@ class Region extends PluginBase implements Listener {
             return $this->getServer()->getPluginManager()->getPlugin($this->getRegionPlugin());
         }
         public function getRegionPlugin() {
-            
+
             if($this->wguard() != NULL){
                 $result = 'WGuard';
-                
+
             }elseif($this->ProtectionAreas() != NULL){
-                $result = 'ProtectionAreas';  
+                $result = 'ProtectionAreas';
             }elseif ($this->WorldGuardian()) {
                 $result = 'WorldGuardian';
         }
             return $result;
         }
         public function changeOwner($region, $member) {
-            
+
             if($this->getRegionPlugin() == 'ProtectionAreas' or $this->getRegionPlugin() == 'WGuard'){
                 //$this->region() ->areas->set(strtolower($region), array("owners" => array(strtolower($nicname))));
                 $this->getLogger()->info($this->ROAPFA($this->getOwner($region), $region, "owners", "remove"));
                 $this->getLogger()->info($this->ROAPFA($member, $region, "owners", "add"));
-                
+
             }elseif ($this->getRegionPlugin() == 'WorldGuardian') {
-           
-               
+
+
                     $result =  $this->region()->db->query("SELECT * FROM AREAS WHERE Region = '$region' AND Owner = '$username'")->fetchArray(SQLITE3_ASSOC);
                     $count  =  $this->region()->db->query("SELECT COUNT(*) as count FROM AREAS WHERE Region = '$region' AND Owner = '$username'")->fetchArray(SQLITE3_ASSOC);
-                
+
                 if(!empty($member) && !empty($region)) {
                     if($count['count']) {
                         $check =  $this->region()->db->query("SELECT COUNT(*) as count FROM MEMBERS WHERE Region = '$region' AND Name = '$member'")->fetchArray(SQLITE3_ASSOC);
@@ -135,16 +135,16 @@ class Region extends PluginBase implements Listener {
                 } else {
                     $this->getLogger()->info(TextFormat::RED . "Использование: /addmember <регион> <игрок>");
                 }
-            
+
         }
         }
-      
+
         public function SignChange(SignChangeEvent $event) {
-             if($event->getBlock()->getId() == 68 || $event->getBlock()->getId() == 63){ 
+             if($event->getBlock()->getId() == 68 || $event->getBlock()->getId() == 63){
                    if ($event->getLine(0) == "region" ){
                        if($this->dataGet(strtolower($event->getLine(1)), 'price') != NULL){
                            $region = strtolower($event->getLine(1));
-                           
+
                             $event->setLine(0,"§4Продается §eРегион!");
                             $event->setLine(1, '§a'.$region);
                             $event->setLine(2, '§eЦена '.$this->dataGet($region, 'price').'$§4');
@@ -153,13 +153,13 @@ class Region extends PluginBase implements Listener {
                            $event->setLine(0,"§4Регион не найден");
                            $event->getPlayer()->sendMessage('Регион не найден');
                        }
-                       
+
                    }
              }
         }
         public function onPlayerTouch(PlayerInteractEvent $event){
-                 if($event->getBlock()->getId() == 68 || $event->getBlock()->getId() == 63){ 
-	           $sign = $event->getPlayer()->getLevel()->getTile($event->getBlock()); 
+                 if($event->getBlock()->getId() == 68 || $event->getBlock()->getId() == 63){
+	           $sign = $event->getPlayer()->getLevel()->getTile($event->getBlock());
                    $signtext = $sign->getText();
                         if($signtext[0] == "§4Продается §eРегион!"  ){
                             $this->buyRegion($event->getPlayer(), str_replace('§a', '',$signtext[1]), $sign);
@@ -168,13 +168,15 @@ class Region extends PluginBase implements Listener {
                                 if($this->sessionAPI()->getSessionData($event->getPlayer()->getName(), "addsign") != null){
                                   $region = $this->sessionAPI()->getSessionData($event->getPlayer()->getName(), "addsign");
                                   $sign->setText("§4Продается §eРегион!", '§a'.$region, '§eЦена '.$this->dataGet($region, 'price').'$§4', '§eВладелец '.$this->dataGet($region, 'owner'));
+                                  $this->sessionAPI()->deleteSession($event->getPlayer()->getName());
+                                  $event->getPlayer()->sendMessage(Region::Prfix."Табличка изменена успешно");
                                 }
                             }
                         }
                  }
-        
+
         public function getOwner($region) {
-            
+
             if($this->getRegionPlugin() == 'ProtectionAreas' || $this->getRegionPlugin() == 'WGuard'){
                 //$result = $this->region(->areas->get(strtolower($region))["owners"];
                   foreach ($this->region()->areas->getAll() as $name => $info) {
@@ -186,14 +188,14 @@ class Region extends PluginBase implements Listener {
             return $result;
         }
         public function ROAPFA($playerForAddOrRemove, $rg, $fromRemove, $removeOrAdd) //Очень сильно не xотел этого делать но пришлось...
-    {   
+    {
         $PFAOR = $playerForAddOrRemove;
         $area = strtolower($rg);
         $areas = $this->region()->areas->getAll();
         $ROA = strtolower($removeOrAdd);
         $FR = strtolower($fromRemove);
         if (isset($areas[$area])) {
-            
+
                 if ($ROA == "add") {
                     $list = $areas[$area][$FR];
                     $list[] = $PFAOR;
@@ -210,7 +212,7 @@ class Region extends PluginBase implements Listener {
                     $this->region()->areas->save();
                     return "§eИгрок §6{$PFAOR} §eбыл удален из региона §6{$area}";
                 }
-          
+
         } else {
             return "§eРегиона §6{$area} §eне существует";
         }
@@ -224,7 +226,7 @@ class Region extends PluginBase implements Listener {
                                                 $sign->setText('§aРегион продан!', '§eВладелец '.$player->getName());
                                            }
                                            $player->sendMessage(Region::Prfix.'Вы успешно купили регион: '.strtolower($region));
-                                          
+
                                            $this->addMoney($this->getOwner($region), $this->dataGet($region, 'price'));
                                            $this->changeOwner($region, $player->getName());
                                            @unlink($this->getDataFolder().'data/'.strtolower($region).'.json');
@@ -233,7 +235,7 @@ class Region extends PluginBase implements Listener {
                                            $player->sendMessage(Region::Prfix.'У вас не достаточно денег для покупки нужно: '.$this->dataGet($region, 'price').'$');
                                            $result = false;
                                        }
-                                       
+
                                    } else {
                                        $player->sendMessage(Region::Prfix.'Регион не найден в продаже');
                                        $result = false;
@@ -249,7 +251,7 @@ class Region extends PluginBase implements Listener {
             $regions[] = "Регион: {$region} Цена: {$this->dataGet($region, 'price')}$ Владелец: {$this->dataGet($region, 'owner')}";
         }
         }
-        
+
             }elseif ($private == true) {
              foreach ($dir as $region){
             if($this->dataGet($region, 'owner') == $player->getName()){
@@ -261,28 +263,28 @@ class Region extends PluginBase implements Listener {
                 $regions[] = Region::Prfix."Увас нет регионов которые выставлены на продажу";
             }
         $pageHeight = $sender instanceof ConsoleCommandSender ? 48 : 6;
-                
-        $chunkedRegions = array_chunk($regions, $pageHeight); 
-        
+
+        $chunkedRegions = array_chunk($regions, $pageHeight);
+
         $maxPageNumber = count($chunkedRegions);
-        
+
         if(!isset($page) || !is_numeric($page) || $page <= 0) {
             $pageNumber = 1;
         }
         else if($page > $maxPageNumber){
-            $pageNumber = $maxPageNumber;   
+            $pageNumber = $maxPageNumber;
         }else{
             $pageNumber = $page;
         }
-       
+
         foreach($chunkedRegions[$pageNumber - 1] as $sendRegion)
         {
             $player->sendMessage(Region::Prfix.' - ' . $sendRegion);
         }
-        
-        
-        
-        
+
+
+
+
     }
     public function cheakRegion($region) {
        if($this->getRegionPlugin() == 'ProtectionAreas' || $this->getRegionPlugin() == 'WGuard'){
@@ -293,8 +295,8 @@ class Region extends PluginBase implements Listener {
         return $result;
     }
         public function onCommand(CommandSender $sender, Command $command, $label, array $args){
-            
-		 
+
+
                  //$alldata = $this->region() ->areas->getAll();
 		switch($command->getName()){
                     case 'br':
@@ -314,7 +316,7 @@ class Region extends PluginBase implements Listener {
 									 }else{
 									$sender->sendMessage(Region::Prfix.'Укажите цену');
 									   }
-                                      //$this->region(->areas->set(strtolower($args[1]), array("owners" => array(strtolower($sender->getName())))); 
+                                      //$this->region(->areas->set(strtolower($args[1]), array("owners" => array(strtolower($sender->getName()))));
                                    }else{
                                        $sender->sendMessage(Region::Prfix.'Вас не обноружено как основным владельцем удалите всеx кто есть в привате (кроме себя)');
                                    }
@@ -324,11 +326,11 @@ class Region extends PluginBase implements Listener {
                                } else {
                                    $sender->sendMessage(Region::Prfix.'Региона не существует');
                                }
-                           
+
                                break;
 //                            case 'addsign':
 //                                $this->sessionAPI()->createSession($sender->getName(), 'createSign', TRUE);
-//                                
+//
 //                                break;
                                case 'buy':
                                    $this->buyRegion($sender, $args[1]);
@@ -354,13 +356,21 @@ class Region extends PluginBase implements Listener {
                             case 'addsign':
                                 if($args[1] != NULL){
                                     if($this->sessionAPI() != null){
+                                         if($this->dataGet(strtolower($args[1]), 'owner') != null){
+                                        if($this->dataGet(strtolower($args[1]), 'owner') == strtolower($sender->getName())){
                                         $this->sessionAPI()->createSession($sender->getName(), "addsign", $args[1]);
                                         $sender->sendMessage(Region::Prfix."Успешно. Теперь нажмите на табличку");
+                                        } else {
+                                            $sender->sendMessage( Region::Prfix."Ошибка. регион который вы пытаетесь добавить не ваш");
+                                        }
+                                    } else {
+                                        $sender->sendMessage(Region::Prfix."Регион не найден");
+                                    }
                                     } else {
                                         $sender->sendMessage( Region::Prfix."Команда не доступна отсутсвует плагин sessionAPI");
                                     }
                                 } else {
-                                $sender->sendMesage(Region::Prfix."Вы не указали название региона");    
+                                $sender->sendMessage(Region::Prfix."Вы не указали название региона");
                                 }
                                 break;
                             default:
@@ -369,14 +379,14 @@ class Region extends PluginBase implements Listener {
                                 }
                                 break;
                 }
-                        
-                 
-                
+
+
+
                 }
         }
-                
+
                 }
-        
+
 
 
 
